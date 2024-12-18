@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            overflow-x: hidden;
+            
+        }
+
+        .agregar-producto {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        h3 {
+            color: #ff5722; /* Color principal */
+            font-size: 1.5em;
+        }
+
+        /* Estilo para los campos de texto */
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        /* Cambio de borde cuando el campo está enfocado */
+        input:focus {
+            border-color: #ff5722; /* Color de borde al enfocar */
+            outline: none;
+        }
+
+        /* Estilo para el botón */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #ff5722; /* Color de fondo del botón */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Efecto al pasar el mouse sobre el botón */
+        button:hover {
+            background-color: #e64a19; /* Color de fondo cuando se pasa el mouse */
+        }
+
+        header {
+            background-color: #f07c00;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        /* Barra de navegación */
+        nav {
+            background-color: #ff5722;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            float: left;
+            font-size: 1.1em;
+            text-transform: uppercase;
+        }
+
+        nav a:hover {
+            background-color: #d84b16;
+        }
+
+.pestana {
+            background-color: #fff;
+            padding: 20px;
+            margin: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            text-align: center;
+        }
+
+        .pestana h3 {
+            margin-bottom: 20px;
+        }
+
+        .pestana input {
+            padding: 10px;
+            margin: 10px;
+            font-size: 1em;
+            width: 80%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .pestana button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+
+        .pestana button:hover {
+            background-color: #388e3c;
+        }
+
+        /* Sección de productos */
+        .productos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 40px;
+            margin-top: 60px;
+        }
+ /* fondo del producto */
+        .producto {
+            background-color: greenyellow;
+            margin: 15px;
+            padding: 15px;
+            width: 220px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .producto:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+ /* ajustar imagenes */
+        .producto img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+          /* color y tamaño del texto */
+        .producto h3 {
+            margin: 15px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .producto p {
+            font-size: 16px;
+            color: #333;
+        }
+         /* botones */
+        .producto button {
+            background-color: #ff5722;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .producto button:disabled {
+            background-color: #d3d3d3;
+            cursor: not-allowed;
+        }
+
+        .producto button:hover:not(:disabled) {
+            background-color: #e64a19;
+        }
+
+        /* Carrito de compras */
+        .carrito {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            z-index: 1000;
+        }
+
+        .carrito h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .carrito ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .carrito ul li {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .carrito .total {
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 1.3em;
+        }
+
+        .carrito button {
+            width: 100%;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .carrito button:hover {
+            background-color: #388e3c;
+        }
+
+        .eliminar {
+            color: red;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+
+        /* Diseño responsivo */
+        @media (max-width: 768px) {
+            .productos {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .producto {
+                width: 90%;
+                margin: 10px 0;
+            }
+
+            .carrito {
+                position: relative;
+                top: auto;
+                right: auto;
+                width: 100%;
+                margin-top: 20px;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- titulo de la encabezera -->
+<header>
+    <h1>Bodega</h1>
+</header>
+<!-- centrar el formulario -->
+<div align="center" style="margin-top: 100px;">
+<div class="agregar-producto">
+    <h3>Agregar nuevo producto</h3>
+    <!-- Campo para agregar el texto -->
+    <input type="text" id="nuevo-nombre" placeholder="Nombre del producto" required>
+    <!-- campo para agregar el precio -->
+    <input type="number" id="nuevo-precio" placeholder="Precio del producto" required>
+    <!-- boton que ejecuta la funcion agregarproductonuevo -->
+    <button onclick="agregarProductoNuevo()">Agregar producto</button>
+</div>
+</div>
+
+
+<section class="productos">
+    <!-- Producto 1 -->
+    <div class="producto" id="producto-1">
+        <img src="aceite.jpg" alt="Producto 1">
+        <h3>Aceite Oleico</h3>
+        <p>Aceite Oleico Virgen Extra 1L - S/ 15</p>
+        <button onclick="agregarAlCarrito('Aceite de Oliva', 15)" id="btn-1">Agregar al carrito</button>
+        
+    </div>
+    <!-- Producto 2 -->
+    <div class="producto" id="producto-2">
+        <img src="oreo.jpg" alt="Producto 2">
+        <h3>Galletas Oreo</h3>
+        <p>Caja Gigante de oreo - S/ 20</p>
+        <button onclick="agregarAlCarrito('Galletas Oreo', 20)" id="btn-2">Agregar al carrito</button>
+       
+    </div>
+    <!-- Producto 3 -->
+    <div class="producto" id="producto-3">
+        <img src="Azucar.jpg" alt="Producto 3">
+        <h3>Azucar Rubia</h3>
+        <p>Azucar Rubia metro 5KG - S/ 30</p>
+        <button onclick="agregarAlCarrito('Azucar Rubia', 30)" id="btn-3">Agregar al carrito</button>
+        
+    </div>
+    <!-- Producto 4 -->
+    <div class="producto" id="producto-4">
+        <img src="arroz.jpg" alt="Producto 4">
+        <h3>Arroz extra </h3>
+        <p>Arroz extra tesoro del campo 5KG - S/ 25</p>
+        <button onclick="agregarAlCarrito('Arroz extra', 25)" id="btn-4">Agregar al carrito</button>
+        
+    </div>
+    <!-- Producto 5 -->
+    <div class="producto" id="producto-5">
+        <img src="harina.jpg" alt="Producto 5">
+        <h3>Harina</h3>
+        <p>Harina Mont Blanc 5KG - S/ 10</p>
+        <button onclick="agregarAlCarrito('Harina', 10)" id="btn-5">Agregar al carrito</button>
+        
+    </div>
+    <!-- Producto 6 -->
+    <div class="producto" id="producto-6">
+        <img src="leche.jpg" alt="Producto 6">
+        <h3>leche</h3>
+        <p>Cantarilla de leche los Pastoreros 5L - S/ 35</p>
+        <button onclick="agregarAlCarrito('leche', 35)" id="btn-6">Agregar al carrito</button>
+         
+    </div>
+    <!-- Producto 7 -->
+    <div class="producto" id="producto-7">
+        <img src="carne.jpg" alt="Producto 7">
+        <h3>Carne res</h3>
+        <p>Carne de res 1KG - S / 40</p>
+        <button onclick="agregarAlCarrito('Carne res', 40)" id="btn-7">Agregar al carrito</button>
+        
+    </div>
+    <!-- Producto 8 -->
+    <div class="producto" id="producto-8">
+        <img src="vinos.jpg" alt="Producto 8">
+        <h3>Vinos Rosados</h3>
+        <p>Pack de vinos de 1L - S/ 50</p>
+        <button onclick="agregarAlCarrito('Vinos Rosados', 50)" id="btn-8">Agregar al carrito</button>
+        
+    </div>
+    <!-- Producto 9 -->
+    <div class="producto" id="producto-9">
+        <img src="avena.png" alt="Producto 9">
+        <h3>Avena</h3>
+        <p>Avena Tres Ositos 5KG - S/ 15</p>
+        <button onclick="agregarAlCarrito('Avena', 15)" id="btn-9">Agregar al carrito</button>
+        
+    </div>
+    <!-- Producto 10 -->
+    <div class="producto" id="producto-10">
+        <img src="frijol.jpg" alt="Producto 10">
+        <h3>Frijoles Castillas</h3>
+        <p>Frijoles Castillas costeño 500g - S/ 18</p>
+        <button onclick="agregarAlCarrito('Frijoles Castillas', 18)" id="btn-10">Agregar al carrito</button>
+    </div>
+</section>
+
+<div class="carrito">
+    <h3>Carrito de compras</h3>
+    <ul id="carrito-lista">
+        <!-- Productos agregados al carrito aparecerán aquí -->
+    </ul>
+    <div class="total">
+        Total: S/<span id="total">0</span>
+    </div>
+    <button onclick="finalizarCompra()">Finalizar compra</button>
+</div>
+
+<script>
+    let carrito = [];
+    let total = 0;
+    let stock = { "Aceite de Oliva": 5, "Galletas Oreo": 5, "Azucar Rubia": 5, "Arroz extra": 5, "Harina": 5, "leche": 5, "Carne res": 5, "Vinos Rosados": 5, "Avena": 5, "Frijoles Castillas": 5 };
+
+    // Función para agregar productos al carrito
+    function agregarAlCarrito(producto, precio) {
+        if (stock[producto] > 0) {
+            carrito.push({ producto, precio }); 
+            stock[producto]--; 
+            total += precio;
+            actualizarCarrito();
+            actualizarBotones();
+        } else {
+            alert(`El ${producto} está agotado.`);
+        }
+    }
+
+    function agregarProductoNuevo() {
+        const nombre = document.getElementById('nuevo-nombre').value;
+        const precio = parseFloat(document.getElementById('nuevo-precio').value);
+
+        // Validar los inputs
+        if (nombre && !isNaN(precio) && precio > 0) {
+            // Agregar al carrito
+            carrito.push({ producto: nombre, precio });
+            total += precio;
+
+            // Actualizar carrito
+            actualizarCarrito();
+
+            // Limpiar los inputs
+            document.getElementById('nuevo-nombre').value = '';
+            document.getElementById('nuevo-precio').value = '';
+        } else {
+            alert("Por favor, ingresa un nombre y precio válidos.");
+        }
+    }
+
+
+    
+    // Función para eliminar el último producto agregado
+    function eliminarDelCarrito() {
+        if (carrito.length > 0) {
+            const productoEliminado = carrito.pop(); 
+            total -= productoEliminado.precio;
+            stock[productoEliminado.producto]++;
+            actualizarCarrito();
+            actualizarBotones();
+        } else {
+            alert("No hay productos para eliminar.");
+        }
+    }
+
+    // Función para actualizar la lista del carrito y el total
+    function actualizarCarrito() {
+        const listaCarrito = document.getElementById('carrito-lista');
+        const totalCarrito = document.getElementById('total');
+        
+        // Limpiar la lista de productos en el carrito
+        listaCarrito.innerHTML = '';
+
+        // Agregar los productos al carrito
+        carrito.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${item.producto} - S/${item.precio}`;
+            
+            if (index === carrito.length - 1) {
+                const botonEliminar = document.createElement('button');
+                botonEliminar.textContent = 'Eliminar';
+                botonEliminar.classList.add('eliminar');
+                botonEliminar.onclick = eliminarDelCarrito;
+                li.appendChild(botonEliminar);
+            }
+
+            listaCarrito.appendChild(li);
+        });
+
+        // Actualizar el total
+        totalCarrito.textContent = total;
+    }
+
+    // Función para finalizar la compra
+    function finalizarCompra() {
+        if (carrito.length === 0) {
+            alert("Tu carrito está vacío.");
+        } else {
+            alert("Compra realizada con éxito. ¡Gracias por tu compra!");
+            carrito = [];
+            total = 0;
+            actualizarCarrito();
+            actualizarBotones();
+        }
+    }
+
+
+
+
+
+    
+    // Actualizar estado de los botones
+    function actualizarBotones() {
+        for (let i = 1; i <= 10; i++) {
+            const btn = document.getElementById(`btn-${i}`);
+            if (stock[`Producto ${i}`] === 0) {
+                btn.disabled = true;
+            } else {
+                btn.disabled = false;
+            }
+        }
+    }
+
+    // Iniciar los botones deshabilitados según el stock inicial
+    actualizarBotones();
+</script>
+
+</body>
+</html>
